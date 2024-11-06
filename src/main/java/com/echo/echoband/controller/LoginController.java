@@ -35,7 +35,7 @@ public class LoginController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        BooleanBinding camposValidos = fieldusuario.textProperty().isNotEmpty()
+        BooleanBinding camposValidos =(fieldusuario.textProperty().isNotEmpty())
                 .and(fieldcontrasena.textProperty().isNotEmpty());
 
         botoniniciar.disableProperty().bind(camposValidos.not());
@@ -69,48 +69,51 @@ public class LoginController implements Initializable {
 
     //Métodos para la BD
     @FXML
-    public void ingresar() {
+    public void ingresar(){
         String usuario = fieldusuario.getText();
         String contrasena = fieldcontrasena.getText();
 
-        if (!usuario.isEmpty() && !contrasena.isEmpty()) {
-            try {
+        if(!usuario.isEmpty() && !contrasena.isEmpty()){
+            try{
                 connector = new Connector();
                 cn = connector.conectar();
 
-                // Usamos PreparedStatement para evitar inyección SQL
-                String consulta = "SELECT nom_real, ap_pat, nom_usuario, id_datos " +
-                        "FROM datos_perso " +
-                        "WHERE nom_usuario = ? AND contraseña = ?;";
-                PreparedStatement ps = cn.prepareStatement(consulta);
-                ps.setString(1, usuario);
-                ps.setString(2, contrasena);
+                PreparedStatement ps = cn.prepareStatement("SELECT nom_real, ap_pat, nom_usuario\n" +
+                        "FROM datos_perso\n" +
+                        "WHERE nom_usuario = '"+usuario+"' AND contraseña = '"+contrasena+"';");
 
-                ResultSet rs = ps.executeQuery();
 
-                if (rs.next()) {
-                    String nomReal = rs.getString("nom_real");
-                    String apPat = rs.getString("ap_pat");
-                    String nomUsuario = rs.getString("nom_usuario");
-                    int idDatos = rs.getInt("id_datos");
+                // Obtener el ID del usuario recién creado
+                String obtID = "SELECT id_datos FROM datos_perso WHERE nom_usuario = '"+usuario+"';";
+                PreparedStatement ps2 = cn.prepareStatement(obtID);
+                ps2.setString(1, usuario);  // Utilizamos PreparedStatement para evitar inyecciones SQL
+                ResultSet rs = ps2.executeQuery();
 
-                    System.out.println("Hola de nuevo " + nomUsuario);
-                    System.out.println("Perfil de " + nomReal + " " + apPat);
-                    System.out.println("ID del usuario: " + idDatos);
-
-                    irAMenu(); // Si el login es exitoso, ir al menú
+                if (rs.next()) {  // Asegurarse de que haya un resultado antes de acceder a él
+                    int num = rs.getInt("id_datos");
+                    System.out.println("ID: " + num);
+                } else {
+                    System.out.println("No se encontró el ID del usuario.");
+                }
+                ResultSet rs1 = ps.executeQuery();
+                if(rs1.next()){
+                    String datos[] = new String[]{rs1.getString("nom_real"),
+                            rs1.getString("ap_pat"),
+                            rs1.getString("nom_usuario")};
+                    System.out.println("Hola de nuevo "+datos[2]);
+                    System.out.println("Perfil de "+datos[0]+" "+datos[1]);
+                    irAMenu();
                 } else {
                     JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos");
                 }
 
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Error al iniciar sesión: " + e.getMessage());
-                e.printStackTrace();
+            } catch (Exception e){
+                JOptionPane.showMessageDialog(null, "Error al iniciar sesión: "+e.getMessage());
             } finally {
                 connector.cerrarConexion();
             }
         } else {
-            JOptionPane.showMessageDialog(null, "Debe completar los campos.");
+            JOptionPane.showMessageDialog(null, "Debe completar los campos este cawn");
         }
     }
 }

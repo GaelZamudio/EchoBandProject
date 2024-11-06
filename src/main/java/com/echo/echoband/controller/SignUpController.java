@@ -1,6 +1,7 @@
 package com.echo.echoband.controller;
 
 import com.echo.echoband.SignUp;
+import com.echo.echoband.Training;
 import com.echo.echoband.connection.Connector;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXCheckbox;
@@ -12,10 +13,13 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -35,6 +39,7 @@ public class SignUpController implements Initializable{
 
     private Connector connector;
     private Connection cn;
+    private String usuario;
 
     private static final PseudoClass pseudoclaseValidacion = PseudoClass.getPseudoClass("invalido");
     private static final String[] mayusculas = "A B C D E F G H I J K L M N O P Q R S T U V W X Y Z".split(" ");
@@ -76,6 +81,10 @@ public class SignUpController implements Initializable{
             e.printStackTrace();
             System.out.println("Error al cargar trainingView.fxml");
         }
+    }
+
+    public void signUp(String usuario){
+        this.usuario = usuario;
     }
 
     public void irALogIn() throws IOException {
@@ -342,6 +351,17 @@ public class SignUpController implements Initializable{
                     if (rs.next()) {  // Asegurarse de que haya un resultado antes de acceder a él
                         int num = rs.getInt("id_datos");
                         System.out.println("ID: " + num);
+
+                        // Usar el controlador de la vista cargada con FXMLLoader
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/echo/echoband/trainingView.fxml"));
+                        AnchorPane root = loader.load(); // Cargar la vista
+                        TrainingController controller = loader.getController(); // Obtener el controlador ya inicializado
+
+                        // Pasar los datos al controlador
+                        controller.obtenerDatosPorID(cn, num);
+
+                        irAMenu();
+
                     } else {
                         System.out.println("No se encontró el ID del usuario.");
                     }
@@ -352,7 +372,6 @@ public class SignUpController implements Initializable{
                 JOptionPane.showMessageDialog(null, "No se pudo guardar el usuario: "+e.getMessage());
             }
             connector.cerrarConexion();
-            irAMenu();
         }
     }
 

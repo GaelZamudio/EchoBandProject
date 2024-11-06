@@ -18,7 +18,7 @@
                     <Image url="@/juanBarraNav.png"/>
                 </ImageView>
             </StackPane>
-            <Label text="Juanito Pérez" styleClass="profile-name"/>
+            <Label fx:id="idNombre" text="Juanito Pérez" styleClass="profile-name"/>
         </VBox>
 
         <Separator styleClass="separator"/>
@@ -74,7 +74,7 @@
     </VBox>
 
     <VBox layoutX="250" layoutY="50" AnchorPane.leftAnchor="250" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" alignment="CENTER" spacing="30">
-        <Label text="Hola de nuevo, Juanito" style="-fx-font-size: 32" styleClass="title"/>
+        <Label fx:id="idUsuario" text="Hola de nuevo, Juanito" style="-fx-font-size: 32" styleClass="title"/>
 
         <HBox spacing="30" alignment="CENTER">
             <MFXButton fx:id="calor" prefWidth="200" prefHeight="160" styleClass="buttonEntrenar" style="-fx-background-color: white" onMouseClicked="#irACalor"

@@ -15,9 +15,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class SignUp extends Application {
+
     public void cambiarEscena(Stage stage, String vistaFXML) throws IOException {
         FXMLLoader cargador = new FXMLLoader(getClass().getResource(vistaFXML));
         AnchorPane root = cargador.load();
+
 
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("signUpStyle.css").toExternalForm());
