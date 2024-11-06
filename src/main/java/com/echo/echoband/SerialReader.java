@@ -18,7 +18,7 @@ public class SerialReader {
         }
 
         // Selecciona el puerto serial correcto
-        port = SerialPort.getCommPort("COM7"); // Cambia a tu puerto correcto
+        port = SerialPort.getCommPort("COM8"); // Cambia a tu puerto correcto
 
         // Configura el puerto: 9600 baudios, 8 bits de datos, 1 bit de parada, sin paridad
         port.setBaudRate(9600);
