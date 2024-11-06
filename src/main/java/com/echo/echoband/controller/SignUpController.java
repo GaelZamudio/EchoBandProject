@@ -1,6 +1,7 @@
 package com.echo.echoband.controller;
 
 import com.echo.echoband.SignUp;
+import com.echo.echoband.Training;
 import com.echo.echoband.connection.Connector;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXCheckbox;
@@ -63,7 +64,7 @@ public class SignUpController implements Initializable{
     public void irAMenu() {
         try {
             Stage stage = (Stage) botoncrear.getScene().getWindow();
-            SignUp app = new SignUp();
+            Training app = new Training();
             stage.setTitle("Entrenamiento");
 
             app.cambiarEscena(stage, "/com/echo/echoband/trainingView.fxml");

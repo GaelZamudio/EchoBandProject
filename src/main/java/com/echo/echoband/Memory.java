@@ -7,6 +7,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 public class Memory extends Application {
+    private SerialReader serialReader;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -23,6 +24,18 @@ public class Memory extends Application {
         primaryStage.setTitle("Entrenar");
 
         primaryStage.show();
+
+        // Crear instancia de SerialReader e iniciar recepción de datos
+        serialReader = new SerialReader();
+        serialReader.comenzarARecibirDatos(); // Inicia la lectura de datos
+    }
+
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+        if (serialReader != null) {
+            serialReader.cerrarConexion(); // Cierra la conexión cuando se cierra la aplicación
+        }
     }
 
     public static void main(String[] args) {
