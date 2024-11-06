@@ -1,7 +1,7 @@
 package com.echo.echoband.controller;
 
 import com.echo.echoband.LogIn;
-import com.echo.echoband.connection.Connector;
+import com.echo.echoband.connection.DatabaseConnection;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXPasswordField;
 import io.github.palexdev.materialfx.controls.MFXTextField;
@@ -23,7 +23,7 @@ import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
 
-    private Connector connector;
+    private DatabaseConnection databaseConnection;
     private Connection cn;
 
     @FXML private Text txtcrear;
@@ -75,8 +75,8 @@ public class LoginController implements Initializable {
 
         if(!usuario.isEmpty() && !contrasena.isEmpty()){
             try{
-                connector = new Connector();
-                cn = connector.conectar();
+                databaseConnection = new DatabaseConnection();
+                cn = databaseConnection.getConnection();
 
                 PreparedStatement ps = cn.prepareStatement("SELECT nom_real, ap_pat, nom_usuario\n" +
                         "FROM datos_perso\n" +
@@ -110,7 +110,7 @@ public class LoginController implements Initializable {
             } catch (Exception e){
                 JOptionPane.showMessageDialog(null, "Error al iniciar sesión: "+e.getMessage());
             } finally {
-                connector.cerrarConexion();
+                databaseConnection.cerrarConexion();
             }
         } else {
             JOptionPane.showMessageDialog(null, "Debe completar los campos este cawn");

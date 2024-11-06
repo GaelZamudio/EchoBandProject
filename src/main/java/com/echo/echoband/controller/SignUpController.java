@@ -1,8 +1,7 @@
 package com.echo.echoband.controller;
 
 import com.echo.echoband.SignUp;
-import com.echo.echoband.Training;
-import com.echo.echoband.connection.Connector;
+import com.echo.echoband.connection.DatabaseConnection;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXCheckbox;
 import io.github.palexdev.materialfx.controls.MFXPasswordField;
@@ -15,7 +14,6 @@ import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
@@ -24,20 +22,18 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import javax.swing.*;
-import javax.xml.transform.Result;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLOutput;
 import java.util.List;
 import java.util.ResourceBundle;
 import static io.github.palexdev.materialfx.utils.StringUtils.containsAny;
 
 public class SignUpController implements Initializable{
 
-    private Connector connector;
+    private DatabaseConnection databaseConnection;
     private Connection cn;
     private String usuario;
 
@@ -329,8 +325,8 @@ public class SignUpController implements Initializable{
             JOptionPane.showMessageDialog(null, "Debe completar los datos");
         } else {
             try {
-                connector = new Connector();
-                cn = connector.conectar();
+                databaseConnection = new DatabaseConnection();
+                cn = databaseConnection.getConnection();
 
                 existe = existe(cn);
                 if(existe){
@@ -371,7 +367,7 @@ public class SignUpController implements Initializable{
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "No se pudo guardar el usuario: "+e.getMessage());
             }
-            connector.cerrarConexion();
+            databaseConnection.cerrarConexion();
         }
     }
 

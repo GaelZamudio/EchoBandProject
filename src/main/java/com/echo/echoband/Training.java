@@ -19,10 +19,6 @@ public class Training extends Application {
         FXMLLoader cargador = new FXMLLoader(getClass().getResource(vistaFXML));
         AnchorPane root = cargador.load();
 
-        TrainingController controlador = cargador.getController();
-        controlador.probarActualizacionLabels();
-        System.out.println("Controlador cargado: " + controlador);
-
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("configurationStyle.css").toExternalForm());
         stage.setScene(scene);

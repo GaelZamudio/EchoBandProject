@@ -2,11 +2,11 @@ package com.echo.echoband.connection;
 
 import java.sql.*;
 
-public class Connector {
-    Connection conn;
+public class DatabaseConnection {
+    static Connection conn;
 
 
-    public Connection conectar() {
+    public static Connection getConnection() {
         try {
             conn = (Connection) DriverManager.getConnection("jdbc:mysql://bbajbhu4gnjiftjk0ikh-mysql.services.clever-cloud.com/bbajbhu4gnjiftjk0ikh",
                     "u2krjwfzaqfkv12i",
