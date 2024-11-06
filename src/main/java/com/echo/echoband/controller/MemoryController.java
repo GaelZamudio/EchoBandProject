@@ -1,5 +1,8 @@
 package com.echo.echoband.controller;
 
+import com.echo.echoband.Memory;
+import com.echo.echoband.SerialReader;
+import com.echo.echoband.SignUp;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
@@ -18,6 +21,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class MemoryController {
+
+    private SerialReader serialReader;
+    private ArrayList<Integer> data;
 
     @FXML private ImageView image00;
     @FXML private ImageView image01;
@@ -71,6 +77,9 @@ public class MemoryController {
         shuffleImages();
         setupButtons();
         startCountdown();
+        // Crear instancia de SerialReader e iniciar recepción de datos
+        serialReader = new SerialReader();
+        serialReader.comenzarARecibirDatos(); // Inicia la lectura de datos
     }
 
     private void setupButtons() {
@@ -107,8 +116,9 @@ public class MemoryController {
             timeRemainingLabel.setText(timeRemaining + " segundos");
             if (timeRemaining <= 0) {
                 countdownTimeline.stop();
+                serialReader.cerrarConexion();
                 System.out.println("El tiempo se ha acabado, cambiando a lostGameView");
-                switchToView("/com/echo/echoband/lostGameView");
+                switchToView("/com/echo/echoband/lostGameView", null);
             }
         }));
         countdownTimeline.setCycleCount(Timeline.INDEFINITE);
@@ -177,9 +187,11 @@ public class MemoryController {
             }
         }
         if (allFlipped && timeRemaining > 0) {
+            data = serialReader.getData();
+            serialReader.cerrarConexion();
             countdownTimeline.stop();
             System.out.println("Juego completo, cambiando a viewEntrenar4");
-            switchToView("/com/echo/echoband/gameWonView");
+            switchToView("/com/echo/echoband/gameWonView", data);
         }
     }
 
@@ -192,20 +204,29 @@ public class MemoryController {
         secondFlippedIndex = -1;
     }
 
-    private void switchToView(String viewName) {
+    private void switchToView(String viewName, ArrayList<Integer> data) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource(viewName + ".fxml"));
-            Scene scene = new Scene(root);
+            // Si quieres cambiar a la vista de estadísticas
+            if (viewName.equals("/com/echo/echoband/gameWonView")) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/echo/echoband/statisticsView.fxml"));
+                Parent root = loader.load();
+                Scene scene = new Scene(root);
 
-            String css = getClass().getResource("/com/echo/echoband/lostGameStyle.css").toExternalForm();
-            scene.getStylesheets().add(css);
+                // Establecer los datos de las estadísticas si es necesario
+                StatisticsController statisticsController = loader.getController();
+                statisticsController.setData(data);
 
-            Stage stage = (Stage) timeRemainingLabel.getScene().getWindow();
-            stage.setScene(scene);
-            stage.setFullScreen(true);
-            stage.show();
+                Stage stage = (Stage) timeRemainingLabel.getScene().getWindow();
+                scene.getStylesheets().clear();
+                scene.getStylesheets().add(SignUp.class.getResource("/com/echo/echoband/statisticsStyle.css").toExternalForm());
+                stage.setScene(scene);
+                stage.setFullScreen(true);
+                stage.show();
+            }
+            // Otro código de transición si es necesario
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 }

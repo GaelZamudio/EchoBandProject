@@ -8,6 +8,7 @@ import javafx.scene.chart.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class StatisticsController {
 
@@ -24,6 +25,20 @@ public class StatisticsController {
     @FXML private NumberAxis yAxis;
     @FXML private BarChart<String, Number> barChart;
     @FXML private CategoryAxis xAxisBar;
+
+    // Método para recibir y procesar el array de datos
+    public void setData(ArrayList<Integer> data) {
+        // Configurar la serie para la gráfica
+        XYChart.Series<Number, Number> series = new XYChart.Series<>();
+
+        // Población de la serie con los datos del array
+        for (int i = 0; i < data.size(); i++) {
+            series.getData().add(new XYChart.Data<>(i, data.get(i)));
+        }
+
+        // Añadir la serie a la gráfica
+        lineChart.getData().add(series);
+    }
 
     public void irAConfig() throws IOException {
         Stage stage = (Stage) config.getScene().getWindow();
@@ -58,9 +73,8 @@ public class StatisticsController {
     }
 
     @FXML
-    public void initialize() {
-        int[] concentracion = {40, 24, 70, 53, 43, 23, 80, 34, 46, 46, 76, 68, 98, 100, 32, 67, 87, 89};
-        double promedio = calcularPromedio(concentracion);
+    public void initialize(ArrayList<Integer> data) {
+        double promedio = calcularPromedio(data);
 
         xAxis.setLabel("Tiempo (segundos)");
         yAxis.setLabel("Nivel de Concentración");
@@ -68,8 +82,8 @@ public class StatisticsController {
         XYChart.Series<Number, Number> series = new XYChart.Series<>();
         series.setName("Concentración");
 
-        for (int i = 0; i < concentracion.length; i++) {
-            series.getData().add(new XYChart.Data<>(i + 1, concentracion[i]));
+        for (int i = 0; i < data.size(); i++) {
+            series.getData().add(new XYChart.Data<>(i + 1, data.get(i)));
         }
 
         lineChart.getData().add(series);
@@ -77,7 +91,7 @@ public class StatisticsController {
         XYChart.Series<Number, Number> promedioSeries = new XYChart.Series<>();
         promedioSeries.setName("Promedio");
 
-        for (int i = 1; i <= concentracion.length; i++) {
+        for (int i = 1; i <= data.size(); i++) {
             promedioSeries.getData().add(new XYChart.Data<>(i, promedio));
         }
 
@@ -112,11 +126,11 @@ public class StatisticsController {
         barChart.setMaxWidth(675);
     }
 
-    private double calcularPromedio(int[] concentracion) {
+    private double calcularPromedio(ArrayList<Integer> data) {
         double suma = 0;
-        for (int valor : concentracion) {
+        for (int valor : data) {
             suma += valor;
         }
-        return suma / concentracion.length;
+        return suma / data.size();
     }
 }
